@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101b35">
+  <meta name="description" content="Permainan Truth or Dare interaktif untuk pembelajaran Pendidikan Pancasila kelas VII.">
+  <title>Truth or Dare Pancasila | Kelas VII</title>
+  <style>
+    :root {
+      --navy: #101b35;
+      --navy-2: #172647;
+      --ink: #172033;
+      --muted: #68758c;
+      --paper: #f4f7fb;
+      --white: #ffffff;
+      --blue: #3978f6;
+      --blue-soft: #eaf1ff;
+      --green: #168a62;
+      --green-soft: #e4f8ef;
+      --gold: #ffc857;
+      --red: #e65c5c;
+      --border: #e0e7f0;
+      --shadow: 0 18px 55px rgba(16, 27, 53, .12);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); background:
+        radial-gradient(circle at 8% 0%, rgba(57,120,246,.09), transparent 26rem),
+        radial-gradient(circle at 100% 25%, rgba(22,138,98,.08), transparent 28rem),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid rgba(57,120,246,.35); outline-offset: 2px;
+    }
+    .topbar {
+      background: var(--navy); color: white; padding: 14px 22px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      position: sticky; top: 0; z-index: 20; box-shadow: 0 6px 25px rgba(16,27,53,.18);
+    }
+    .brand { display:flex; gap: 11px; align-items:center; min-width:0; }
+    .brand-mark {
+      width: 42px; height:42px; display:grid; place-items:center; border-radius: 14px;
+      color: var(--navy); background: var(--gold); font-size: 22px; flex:0 0 auto;
+    }
+    .brand strong { display:block; font-size: 15px; letter-spacing:.2px; }
+    .brand small { display:block; color:#b8c5dc; font-size:12px; }
+    .top-actions { display:flex; gap:8px; align-items:center; }
+    .top-btn {
+      border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08);
+      color:white; border-radius:12px; padding:9px 12px; font-weight:700; font-size:13px;
+    }
+    .top-btn:hover { background:rgba(255,255,255,.16); }
+    .wrap { width:min(1160px, calc(100% - 32px)); margin:0 auto; }
+    .hero { padding: 42px 0 24px; display:grid; grid-template-columns:1.2fr .8fr; gap:28px; align-items:center; }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--border); border-radius:999px; padding:7px 12px; color:#39557e; font-size:12px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; }
+    .dot { width:8px; height:8px; border-radius:50%; background:var(--green); }
+    h1 { margin:15px 0 12px; color:var(--navy); font-size:clamp(32px,5vw,55px); line-height:1.04; letter-spacing:-1.8px; }
+    h1 span { color:var(--blue); }
+    .hero p { color:var(--muted); max-width:620px; font-size:16px; margin:0 0 20px; }
+    .hero-tags { display:flex; flex-wrap:wrap; gap:8px; }
+    .tag { font-size:12px; font-weight:700; border-radius:10px; background:#fff; border:1px solid var(--border); padding:7px 10px; }
+    .hero-art {
+      min-height:220px; border-radius:30px; padding:24px; color:white; background:
+        radial-gradient(circle at 80% 20%, rgba(255,200,87,.22), transparent 9rem),
+        linear-gradient(145deg, #1d3159, #101b35);
+      box-shadow:var(--shadow); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;
+    }
+    .hero-art:before, .hero-art:after { content:""; position:absolute; border:1px solid rgba(255,255,255,.12); border-radius:50%; width:220px;height:220px; right:-50px;top:-70px; }
+    .hero-art:after { width:150px;height:150px;right:20px;top:-30px; }
+    .mini-cards { display:flex; gap:14px; position:relative; z-index:1; transform:rotate(-4deg); }
+    .mini-card { width:132px;height:164px;border-radius:20px;background:#fff;color:var(--ink);padding:16px;box-shadow:0 15px 35px #0003;display:flex;flex-direction:column;justify-content:space-between; }
+    .mini-card.truth { transform:rotate(-7deg); border-top:6px solid var(--blue); }
+    .mini-card.dare { transform:rotate(7deg) translateY(12px); border-top:6px solid var(--green); }
+    .mini-icon { font-size:29px; }
+    .mini-card b { font-size:18px; }
+    .mini-card small { font-size:10px;color:var(--muted); }
+    .section-heading { display:flex; align-items:end; justify-content:space-between; gap:14px; margin:16px 0 14px; }
+    .section-heading h2 { margin:0; color:var(--navy); font-size:23px; letter-spacing:-.5px; }
+    .section-heading p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+    .game-layout { display:grid; grid-template-columns:minmax(0,1fr) 310px; gap:20px; align-items:start; padding-bottom:34px; }
+    .panel { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 7px 28px rgba(16,27,53,.045); }
+    .play-panel { padding:22px; }
+    .controls { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
+    .mode-switch { display:flex; padding:5px; gap:5px; border-radius:15px; background:#f0f3f8; }
+    .mode-btn { border:0; border-radius:11px; padding:10px 16px; font-weight:850; color:#5b6680; background:transparent; }
+    .mode-btn.active.truth { color:white; background:var(--blue); box-shadow:0 5px 13px #3978f640; }
+    .mode-btn.active.dare { color:white; background:var(--green); box-shadow:0 5px 13px #168a6240; }
+    .filter-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .select { border:1px solid var(--border); border-radius:12px; padding:10px 12px; background:white; color:var(--ink); max-width:100%; }
+    .card-stage {
+      min-height:310px; display:grid; place-items:center; border-radius:21px; padding:20px;
+      background:linear-gradient(135deg,#f7faff,#f2f6fb); border:1px dashed #d4deed; position:relative; overflow:hidden;
+    }
+    .question-card { width:min(100%,520px); min-height:245px; background:#fff; border-radius:23px; padding:26px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; box-shadow:0 17px 45px rgba(16,27,53,.12); border:1px solid #edf1f7; position:relative; transition:transform .25s ease, opacity .25s ease; }
+    .question-card.truth { border-top:7px solid var(--blue); }
+    .question-card.dare { border-top:7px solid var(--green); }
+    .card-label { display:inline-flex; align-items:center; gap:7px; border-radius:999px; padding:6px 11px; font-size:11px; font-weight:900; letter-spacing:.8px; text-transform:uppercase; }
+    .truth .card-label { color:var(--blue); background:var(--blue-soft); }
+    .dare .card-label { color:var(--green); background:var(--green-soft); }
+    .question-icon { font-size:34px; margin:15px 0 8px; }
+    .question-text { color:var(--navy); font-size:clamp(20px,2.6vw,28px); font-weight:850; line-height:1.25; max-width:440px; margin:0; }
+    .question-hint { color:var(--muted); font-size:13px; margin:13px 0 0; }
+    .card-footer { position:absolute; left:18px; right:18px; bottom:13px; display:flex; justify-content:space-between; font-size:10px; color:#98a3b5; font-weight:700; }
+    .empty-card { color:var(--muted); text-align:center; max-width:330px; }
+    .empty-card b { display:block;color:var(--navy);font-size:19px;margin:8px 0; }
+    .action-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:18px 0 8px; }
+    .btn { border:0; border-radius:13px; padding:12px 17px; font-weight:850; display:inline-flex; gap:8px; align-items:center; justify-content:center; transition:transform .15s, filter .15s; }
+    .btn:hover { filter:brightness(.97); transform:translateY(-1px); }
+    .btn:active { transform:translateY(0); }
+    .btn-primary { color:white; background:var(--navy); box-shadow:0 7px 15px #101b3522; }
+    .btn-blue { color:white; background:var(--blue); }
+    .btn-green { color:white; background:var(--green); }
+    .btn-light { color:var(--navy); background:#eef2f8; }
+    .btn-outline { color:var(--navy); background:white; border:1px solid var(--border); }
+    .btn-danger { color:#b42323; background:#fff0f0; }
+    .small-note { text-align:center; color:var(--muted); font-size:12px; margin:12px auto 0; max-width:600px; }
+    .side-panel { padding:19px; }
+    .side-panel h3 { margin:0 0 13px; font-size:17px; color:var(--navy); }
+    .turn-box { padding:14px; background:#f5f7fb; border-radius:15px; border:1px solid var(--border); margin-bottom:16px; }
+    .turn-label { color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.7px; }
+    .turn-name { font-size:21px; font-weight:900; margin:4px 0 10px; color:var(--navy); overflow-wrap:anywhere; }
+    .turn-actions { display:flex; gap:7px; }
+    .turn-actions button { flex:1; padding:8px 9px; font-size:12px; }
+    .score-list { display:flex; flex-direction:column; gap:9px; margin:0 0 13px; }
+    .score-item { display:flex; align-items:center; justify-content:space-between; gap:8px; border:1px solid var(--border); border-radius:12px; padding:10px 11px; }
+    .score-name { min-width:0; overflow-wrap:anywhere; font-size:13px; font-weight:750; }
+    .score-points { background:#fff4d8; color:#8a5b00; padding:4px 8px; border-radius:8px; font-size:12px; font-weight:900; white-space:nowrap; }
+    .score-tools { display:flex; gap:7px; }
+    .score-tools .btn { padding:9px 10px; font-size:12px; flex:1; }
+    .rule { height:1px; background:var(--border); margin:18px 0; }
+    .rules { padding:0; margin:0; list-style:none; display:grid; gap:10px; }
+    .rules li { display:flex; gap:9px; color:#536078; font-size:12px; }
+    .rules span { width:22px;height:22px;border-radius:7px;background:#eef3ff;color:var(--blue);display:grid;place-items:center;font-weight:900;flex:0 0 auto; }
+    .footer { background:var(--navy); color:#c5d0e3; padding:22px 16px; text-align:center; font-size:12px; }
+    .footer strong { color:white; }
+    .modal-backdrop { position:fixed; inset:0; background:rgba(9,17,35,.62); z-index:50; padding:18px; display:none; align-items:center; justify-content:center; overflow:auto; }
+    .modal-backdrop.show { display:flex; }
+    .modal { width:min(720px,100%); max-height:min(90vh,900px); overflow:auto; background:white; border-radius:22px; padding:22px; box-shadow:0 30px 90px #0004; }
+    .modal-header { display:flex; justify-content:space-between; gap:12px; align-items:start; margin-bottom:16px; }
+    .modal-header h2 { margin:0; color:var(--navy); font-size:23px; }
+    .modal-header p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+    .icon-btn { border:0; background:#eef2f8; border-radius:10px; width:36px;height:36px;font-size:20px;color:var(--navy); }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field.full { grid-column:1/-1; }
+    .field label { font-size:12px; font-weight:850; color:#45536c; }
+    .field input, .field select, .field textarea { border:1px solid #d9e1ec; border-radius:11px; padding:11px 12px; color:var(--ink); background:white; width:100%; }
+    .field textarea { min-height:90px; resize:vertical; }
+    .helper { font-size:11px;color:var(--muted); }
+    .editor-list { display:grid; gap:9px; margin:14px 0; }
+    .editor-item { border:1px solid var(--border); border-radius:12px; padding:11px; display:flex; justify-content:space-between; gap:10px; align-items:start; }
+    .editor-item p { margin:5px 0 0; font-size:13px; }
+    .editor-item small { color:var(--muted); }
+    .editor-actions { display:flex; gap:6px; }
+    .editor-actions button { border:0; border-radius:8px; padding:7px 9px; background:#eef2f8; font-size:12px; font-weight:800; }
+    .editor-actions .delete { color:#b42323;background:#fff0f0; }
+    .modal-bottom { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:16px; }
+    .toast { position:fixed; left:50%; bottom:22px; transform:translate(-50%,20px); opacity:0; pointer-events:none; z-index:100; background:var(--navy); color:white; border-radius:12px; padding:11px 16px; font-size:13px; font-weight:750; box-shadow:var(--shadow); transition:all .25s; max-width:calc(100% - 30px); text-align:center; }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+    @media (max-width:850px) {
+      .hero { grid-template-columns:1fr; padding-top:30px; }
+      .hero-art { min-height:190px; }
+      .game-layout { grid-template-columns:1fr; }
+      .side-panel { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+      .side-panel .rule { display:none; }
+      .side-panel .rules-wrap { grid-column:1/-1; }
+    }
+    @media (max-width:560px) {
+      .topbar { padding:11px 13px; }
+      .brand-mark { width:37px;height:37px; }
+      .brand strong { font-size:13px; }
+      .brand small { font-size:10px; }
+      .top-btn { padding:8px 9px;font-size:11px; }
+      .wrap { width:calc(100% - 22px); }
+      .hero { padding:26px 0 18px; gap:18px; }
+      h1 { letter-spacing:-1px; }
+      .hero p { font-size:14px; }
+      .hero-art { min-height:170px; }
+      .mini-card { width:112px;height:140px;padding:12px; }
+      .play-panel { padding:13px; }
+      .controls { align-items:stretch; }
+      .mode-switch { width:100%; }
+      .mode-btn { flex:1;padding:10px 8px; }
+      .filter-row { width:100%; }
+      .filter-row .select { flex:1; min-width:0; }
+      .card-stage { min-height:310px; padding:12px; }
+      .question-card { min-height:270px;padding:22px 15px; }
+      .question-text { font-size:22px; }
+      .action-row { display:grid; grid-template-columns:1fr 1fr; }
+      .action-row .btn:first-child { grid-column:1/-1; }
+      .side-panel { display:block; padding:15px; }
+      .side-panel .rule { display:block; }
+      .form-grid { grid-template-columns:1fr; }
+      .field.full { grid-column:auto; }
+      .modal { padding:16px; }
+      .section-heading h2 { font-size:20px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">✦</div>
+      <div><strong>TRUTH OR DARE PANCASILA</strong><small>Media pembelajaran · Kelas VII</small></div>
+    </div>
+    <div class="top-actions">
+      <button class="top-btn" id="teacherOpenTop" type="button">⚙ Pengaturan Guru</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Belajar sambil bermain</div>
+        <h1>Berani menjawab.<br><span>Siap beraksi?</span></h1>
+        <p>Jelajahi materi Pendidikan Pancasila melalui kartu Truth dan Dare. Diskusikan kebutuhan manusia, interaksi sosial, dan norma dengan cara yang aktif, aman, dan menyenangkan.</p>
+        <div class="hero-tags">
+          <span class="tag">📘 Kelas VII / Fase D</span>
+          <span class="tag">👥 Individu & kelompok</span>
+          <span class="tag">🎯 Refleksi pembelajaran</span>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Ilustrasi dua kartu permainan">
+        <div class="mini-cards">
+          <div class="mini-card truth"><div class="mini-icon">💬</div><b>TRUTH</b><small>Jujur dalam menjawab</small></div>
+          <div class="mini-card dare"><div class="mini-icon">⚡</div><b>DARE</b><small>Beraksi dan berkolaborasi</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="section-heading">
+        <div><h2>Meja permainan</h2><p>Pilih kategori, ambil kartu, lalu diskusikan jawabannya.</p></div>
+        <span class="tag" id="deckCount">16 kartu tersedia</span>
+      </div>
+      <div class="game-layout">
+        <section class="panel play-panel" aria-label="Area permainan">
+          <div class="controls">
+            <div class="mode-switch" role="group" aria-label="Pilih jenis kartu">
+              <button class="mode-btn active truth" id="truthMode" type="button" aria-pressed="true">💬 Truth</button>
+              <button class="mode-btn dare" id="dareMode" type="button" aria-pressed="false">⚡ Dare</button>
+              <button class="mode-btn" id="randomMode" type="button" aria-pressed="false">🎲 Acak</button>
+            </div>
+            <div class="filter-row">
+              <label class="sr-only" for="categoryFilter">Kategori materi</label>
+              <select class="select" id="categoryFilter">
+                <option value="all">Semua kategori</option>
+                <option value="Manusia dan kebutuhan">Manusia dan kebutuhan</option>
+                <option value="Individu dan sosial">Individu dan sosial</option>
+                <option value="Interaksi sosial">Interaksi sosial</option>
+                <option value="Norma dan aturan">Norma dan aturan</option>
+                <option value="Peran dalam masyarakat">Peran dalam masyarakat</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-stage" id="cardStage" aria-live="polite">
+            <div class="empty-card"><div style="font-size:38px">🃏</div><b>Kartu siap dibuka!</b><span>Tekan “Ambil kartu” untuk memulai permainan.</span></div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-primary" id="drawBtn" type="button">🎲 Ambil kartu</button>
+            <button class="btn btn-light" id="completeBtn" type="button" disabled>✓ Selesai</button>
+            <button class="btn btn-outline" id="skipBtn" type="button">Lewati kartu ↗</button>
+          </div>
+          <p class="small-note">Dare bukan hukuman. Peserta boleh meminta tantangan setara jika merasa tidak nyaman. Hindari tugas berbahaya, merendahkan, atau membuka informasi pribadi.</p>
+        </section>
+
+        <aside class="panel side-panel">
+          <div>
+            <h3>👥 Giliran bermain</h3>
+            <div class="turn-box">
+              <div class="turn-label">Peserta saat ini</div>
+              <div class="turn-name" id="currentPlayer">Kelompok 1</div>
+              <div class="turn-actions">
+                <button class="btn btn-light" id="prevPlayer" type="button" aria-label="Peserta sebelumnya">← Sebelumnya</button>
+                <button class="btn btn-light" id="nextPlayer" type="button" aria-label="Peserta berikutnya">Berikutnya →</button>
+              </div>
+            </div>
+            <div class="score-tools">
+              <button class="btn btn-outline" id="addPlayerBtn" type="button">＋ Peserta</button>
+              <button class="btn btn-outline" id="renamePlayerBtn" type="button">✎ Ubah nama</button>
+            </div>
+          </div>
+          <div>
+            <h3>🏆 Papan skor</h3>
+            <div class="score-list" id="scoreList"></div>
+            <div class="score-tools">
+              <button class="btn btn-light" id="resetScoreBtn" type="button">Reset skor</button>
+              <button class="btn btn-light" id="resetGameBtn" type="button">Mulai ulang</button>
+            </div>
+          </div>
+          <div class="rules-wrap">
+            <div class="rule"></div>
+            <h3>📌 Aturan singkat</h3>
+            <ul class="rules">
+              <li><span>1</span><div>Dengarkan dan hormati jawaban teman.</div></li>
+              <li><span>2</span><div>Jawaban dinilai dari alasan dan pemahaman, bukan kecepatan saja.</div></li>
+              <li><span>3</span><div>Peserta boleh memilih tantangan pengganti yang setara.</div></li>
+              <li><span>4</span><div>Guru memandu klarifikasi konsep dan refleksi.</div></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <strong>Truth or Dare Pancasila</strong> · Media pembelajaran Pendidikan Pancasila kelas VII<br>
+    <span>Belajar dengan sadar, bermakna, menyenangkan, dan saling menghargai.</span>
+  </footer>
+
+  <div class="modal-backdrop" id="teacherModal" role="dialog" aria-modal="true" aria-labelledby="teacherTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <div><h2 id="teacherTitle">⚙ Pengaturan Guru</h2><p>Kelola kartu, peserta, dan data permainan di perangkat ini.</p></div>
+        <button class="icon-btn" id="closeTeacher" type="button" aria-label="Tutup pengaturan">×</button>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label for="cardType">Jenis kartu</label><select id="cardType"><option value="Truth">Truth</option><option value="Dare">Dare</option></select></div>
+        <div class="field"><label for="cardCategory">Kategori materi</label><select id="cardCategory"><option>Manusia dan kebutuhan</option><option>Individu dan sosial</option><option>Interaksi sosial</option><option>Norma dan aturan</option><option>Peran dalam masyarakat</option></select></div>
+        <div class="field full"><label for="cardQuestion">Isi pertanyaan atau tantangan</label><textarea id="cardQuestion" placeholder="Tuliskan pertanyaan Truth atau instruksi Dare..."></textarea></div>
+      </div>
+      <div class="modal-bottom" style="justify-content:flex-start">
+        <button class="btn btn-blue" id="saveCardBtn" type="button">＋ Tambahkan kartu</button>
+        <button class="btn btn-outline" id="exportBtn" type="button">⬇ Ekspor kartu JSON</button>
+        <button class="btn btn-outline" id="importBtn" type="button">⬆ Impor kartu JSON</button>
+        <input id="importFile" type="file" accept=".json,application/json" hidden>
+        <button class="btn btn-outline" id="downloadScoresBtn" type="button">⬇ Unduh skor CSV</button>
+      </div>
+      <div class="rule"></div>
+      <div class="section-heading" style="margin-top:0"><div><h2 style="font-size:18px">Daftar kartu</h2><p id="editorCount">Kartu yang tersedia</p></div></div>
+      <div class="editor-list" id="editorList"></div>
+      <div class="modal-bottom"><button class="btn btn-light" id="restoreCardsBtn" type="button">Pulihkan kartu awal</button><button class="btn btn-primary" id="closeTeacherBottom" type="button">Selesai</button></div>
+      <p class="helper">Catatan: kartu dan skor disimpan di browser/perangkat ini. Jika data browser dihapus atau membuka perangkat lain, data tidak otomatis tersinkron.</p>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    "use strict";
+    const DEFAULT_CARDS = [
+      {id:"t1",type:"Truth",category:"Manusia dan kebutuhan",text:"Apa perbedaan kebutuhan dan keinginan? Berikan satu contoh masing-masing."},
+      {id:"t2",type:"Truth",category:"Manusia dan kebutuhan",text:"Sebutkan dua contoh kebutuhan fisik dan dua kebutuhan nonfisik manusia."},
+      {id:"t3",type:"Truth",category:"Individu dan sosial",text:"Mengapa manusia disebut sebagai makhluk individu sekaligus makhluk sosial?"},
+      {id:"t4",type:"Truth",category:"Interaksi sosial",text:"Apa contoh interaksi sosial yang kamu lakukan di sekolah hari ini?"},
+      {id:"t5",type:"Truth",category:"Norma dan aturan",text:"Apa fungsi norma atau aturan dalam kehidupan bersama?"},
+      {id:"t6",type:"Truth",category:"Norma dan aturan",text:"Apa yang mungkin terjadi jika warga kelas tidak menaati kesepakatan bersama?"},
+      {id:"t7",type:"Truth",category:"Peran dalam masyarakat",text:"Sebutkan satu peranmu di rumah dan satu peranmu di sekolah."},
+      {id:"t8",type:"Truth",category:"Individu dan sosial",text:"Bagaimana cara menghargai teman yang memiliki kebutuhan atau pendapat berbeda?"},
+      {id:"d1",type:"Dare",category:"Manusia dan kebutuhan",text:"Kelompokkan contoh berikut menjadi kebutuhan atau keinginan: air minum, tas sekolah, gim terbaru, dan makanan bergizi. Jelaskan satu alasan."},
+      {id:"d2",type:"Dare",category:"Interaksi sosial",text:"Peragakan dialog singkat ketika kamu meminta bantuan teman dengan sopan, lalu ucapkan terima kasih."},
+      {id:"d3",type:"Dare",category:"Norma dan aturan",text:"Buat satu kalimat ajakan yang sopan agar teman menaati aturan kebersihan kelas."},
+      {id:"d4",type:"Dare",category:"Peran dalam masyarakat",text:"Gambarkan peta peran sederhana: dirimu di rumah, di sekolah, dan di lingkungan masyarakat."},
+      {id:"d5",type:"Dare",category:"Manusia dan kebutuhan",text:"Jika 6 dari 8 anggota kelompok sudah menyelesaikan tugas, berapa persentasenya? Tunjukkan cara menghitungnya."},
+      {id:"d6",type:"Dare",category:"Norma dan aturan",text:"Ciptakan slogan singkat tentang pentingnya menaati norma. Sampaikan dengan suara jelas."},
+      {id:"d7",type:"Dare",category:"Interaksi sosial",text:"Bermain peran singkat: ajak seorang teman yang belum mendapat kesempatan bicara untuk menyampaikan pendapatnya."},
+      {id:"d8",type:"Dare",category:"Peran dalam masyarakat",text:"Usulkan satu tindakan sederhana yang bisa dilakukan kelompokmu untuk menjaga kenyamanan kelas."}
+    ];
+    const STORAGE = {cards:"todp_cards_v1", players:"todp_players_v1", scores:"todp_scores_v1"};
+    let cards = load(STORAGE.cards, DEFAULT_CARDS);
+    let players = load(STORAGE.players, ["Kelompok 1","Kelompok 2","Kelompok 3"]);
+    let scores = load(STORAGE.scores, {});
+    let playerIndex = 0;
+    let activeMode = "Truth";
+    let currentCard = null;
+    let usedIds = [];
+    let editingId = null;
+    let toastTimer;
+
+    const $ = id => document.getElementById(id);
+    function load(key, fallback) {
+      try { const value = localStorage.getItem(key); return value ? JSON.parse(value) : structuredClone(fallback); }
+      catch { return structuredClone(fallback); }
+    }
+    function persist() {
+      localStorage.setItem(STORAGE.cards, JSON.stringify(cards));
+      localStorage.setItem(STORAGE.players, JSON.stringify(players));
+      localStorage.setItem(STORAGE.scores, JSON.stringify(scores));
+    }
+    function esc(value) {
+      return String(value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+    }
+    function notify(message) {
+      const el = $("toast"); el.textContent = message; el.classList.add("show");
+      clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+    function currentPlayerName() { return players[playerIndex] || "Peserta"; }
+    function setMode(mode) {
+      activeMode = mode;
+      $("truthMode").className = "mode-btn" + (mode === "Truth" ? " active truth" : "");
+      $("dareMode").className = "mode-btn" + (mode === "Dare" ? " active dare" : "");
+      $("randomMode").className = "mode-btn" + (mode === "Acak" ? " active" : "");
+      $("truthMode").setAttribute("aria-pressed", String(mode === "Truth"));
+      $("dareMode").setAttribute("aria-pressed", String(mode === "Dare"));
+      $("randomMode").setAttribute("aria-pressed", String(mode === "Acak"));
+      $("drawBtn").className = "btn " + (mode === "Dare" ? "btn-green" : mode === "Truth" ? "btn-blue" : "btn-primary");
+    }
+    function filteredCards() {
+      const cat = $("categoryFilter").value;
+      return cards.filter(card => (activeMode === "Acak" || card.type === activeMode) && (cat === "all" || card.category === cat));
+    }
+    function drawCard() {
+      let pool = filteredCards();
+      if (!pool.length) { notify("Tidak ada kartu untuk filter ini. Coba kategori lain."); return; }
+      let fresh = pool.filter(c => !usedIds.includes(c.id));
+      if (!fresh.length) { usedIds = []; fresh = pool; notify("Semua kartu pada pilihan ini sudah muncul. Pengacakan dimulai lagi."); }
+      currentCard = fresh[Math.floor(Math.random() * fresh.length)];
+      usedIds.push(currentCard.id);
+      renderCard();
+      $("completeBtn").disabled = false;
+    }
+    function renderCard() {
+      const stage = $("cardStage");
+      if (!currentCard) {
+        stage.innerHTML = '<div class="empty-card"><div style="font-size:38px">🃏</div><b>Kartu siap dibuka!</b><span>Tekan “Ambil kartu” untuk memulai permainan.</span></div>';
+        return;
+      }
+      const isTruth = currentCard.type === "Truth";
+      stage.innerHTML = `<article class="question-card ${isTruth ? "truth" : "dare"}">
+        <span class="card-label">${isTruth ? "💬 TRUTH · JAWAB JUJUR" : "⚡ DARE · COBA TANTANGANNYA"}</span>
+        <div class="question-icon">${isTruth ? "💭" : "🎯"}</div>
+        <p class="question-text">${esc(currentCard.text)}</p>
+        <p class="question-hint">${esc(currentCard.category)} · Giliran ${esc(currentPlayerName())}</p>
+        <div class="card-footer"><span>TRUTH OR DARE PANCASILA</span><span>${esc(currentCard.id.toUpperCase())}</span></div>
+      </article>`;
+      $("completeBtn").disabled = false;
+    }
+    function renderPlayers() {
+      if (playerIndex >= players.length) playerIndex = 0;
+      $("currentPlayer").textContent = currentPlayerName();
+      $("scoreList").innerHTML = players.map(name => `<div class="score-item"><span class="score-name">${esc(name)}</span><span class="score-points">${Number(scores[name] || 0)} poin</span></div>`).join("");
+      if (!players.length) { players = ["Kelompok 1"]; playerIndex = 0; persist(); renderPlayers(); }
+    }
+    function renderEditor() {
+      $("deckCount").textContent = `${cards.length} kartu tersedia`;
+      $("editorCount").textContent = `${cards.length} kartu · Truth ${cards.filter(c=>c.type==="Truth").length} · Dare ${cards.filter(c=>c.type==="Dare").length}`;
+      $("editorList").innerHTML = cards.map(card => `<div class="editor-item">
+        <div><small><b>${esc(card.type)}</b> · ${esc(card.category)}</small><p>${esc(card.text)}</p></div>
+        <div class="editor-actions"><button type="button" data-edit="${esc(card.id)}">Edit</button><button class="delete" type="button" data-delete="${esc(card.id)}">Hapus</button></div>
+      </div>`).join("");
+      $("editorList").querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => editCard(btn.dataset.edit)));
+      $("editorList").querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", () => deleteCard(btn.dataset.delete)));
+    }
+    function renderAll() { renderPlayers(); renderEditor(); }
+    function openTeacher() { renderEditor(); $("teacherModal").classList.add("show"); $("cardQuestion").focus(); }
+    function closeTeacher() { $("teacherModal").classList.remove("show"); editingId = null; $("saveCardBtn").textContent = "＋ Tambahkan kartu"; $("cardQuestion").value = ""; }
+    function editCard(id) {
+      const card = cards.find(c => c.id === id); if (!card) return;
+      editingId = id; $("cardType").value = card.type; $("cardCategory").value = card.category; $("cardQuestion").value = card.text;
+      $("saveCardBtn").textContent = "Simpan perubahan"; $("cardQuestion").focus();
+    }
+    function deleteCard(id) {
+      const card = cards.find(c => c.id === id); if (!card) return;
+      if (!confirm("Hapus kartu ini?")) return;
+      cards = cards.filter(c => c.id !== id); usedIds = usedIds.filter(x => x !== id);
+      if (currentCard && currentCard.id === id) { currentCard = null; renderCard(); }
+      persist(); renderAll(); notify("Kartu dihapus.");
+    }
+    function saveCard() {
+      const text = $("cardQuestion").value.trim();
+      if (!text) { notify("Isi pertanyaan atau tantangan terlebih dahulu."); $("cardQuestion").focus(); return; }
+      const data = {type:$("cardType").value, category:$("cardCategory").value, text};
+      if (editingId) {
+        cards = cards.map(c => c.id === editingId ? {...c, ...data} : c);
+        notify("Perubahan kartu disimpan.");
+      } else {
+        cards.push({id:"c" + Date.now().toString(36) + Math.random().toString(36).slice(2,5), ...data});
+        notify("Kartu baru ditambahkan.");
+      }
+      editingId = null; $("cardQuestion").value = ""; $("saveCardBtn").textContent = "＋ Tambahkan kartu";
+      persist(); renderAll();
+    }
+    function exportCards() {
+      const blob = new Blob([JSON.stringify(cards, null, 2)], {type:"application/json"});
+      downloadBlob(blob, "kartu-truth-or-dare-pancasila.json"); notify("File kartu JSON siap diunduh.");
+    }
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+    function importCards(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (!Array.isArray(parsed) || !parsed.every(c => c && ["Truth","Dare"].includes(c.type) && typeof c.text==="string" && typeof c.category==="string")) throw new Error("Format kartu tidak sesuai.");
+          cards = parsed.map((c,i)=>({id:String(c.id || ("imp"+Date.now()+i)),type:c.type,category:c.category,text:c.text}));
+          usedIds = []; currentCard = null; renderCard(); persist(); renderAll(); notify("Kartu berhasil diimpor.");
+        } catch (err) { alert("Gagal mengimpor: " + err.message); }
+        $("importFile").value = "";
+      };
+      reader.readAsText(file);
+    }
+    function downloadScores() {
+      const rows = [["Peserta","Skor"]];
+      players.forEach(name => rows.push([name, Number(scores[name]||0)]));
+      const csv = rows.map(row => row.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(",")).join("\r\n");
+      downloadBlob(new Blob(["\uFEFF"+csv], {type:"text/csv;charset=utf-8"}), "skor-truth-or-dare.csv");
+    }
+    function completeTurn() {
+      if (!currentCard) { notify("Ambil kartu terlebih dahulu."); return; }
+      const answer = confirm("Tandai giliran ini selesai dan beri 1 poin kepada " + currentPlayerName() + "?\nPilih Batal jika hanya ingin menyelesaikan tanpa poin.");
+      if (answer) { scores[currentPlayerName()] = Number(scores[currentPlayerName()]||0) + 1; persist(); renderPlayers(); notify("1 poin diberikan kepada " + currentPlayerName() + "."); }
+      currentCard = null; renderCard(); $("completeBtn").disabled = true;
+      if (players.length > 1) { playerIndex = (playerIndex + 1) % players.length; renderPlayers(); }
+    }
+    function addPlayer() {
+      const name = prompt("Masukkan nama peserta atau kelompok:");
+      if (!name || !name.trim()) return;
+      const clean = name.trim();
+      if (players.some(p => p.toLowerCase() === clean.toLowerCase())) { notify("Nama peserta sudah ada."); return; }
+      players.push(clean); scores[clean] = 0; persist(); renderAll(); notify("Peserta ditambahkan.");
+    }
+    function renamePlayer() {
+      const oldName = currentPlayerName(); const name = prompt("Ubah nama peserta:", oldName);
+      if (!name || !name.trim()) return;
+      const clean = name.trim();
+      if (players.some((p,i) => i !== playerIndex && p.toLowerCase() === clean.toLowerCase())) { notify("Nama peserta sudah digunakan."); return; }
+      const oldScore = Number(scores[oldName] || 0);
+      players[playerIndex] = clean; delete scores[oldName]; scores[clean] = oldScore;
+      persist(); renderAll(); if (currentCard) renderCard(); notify("Nama peserta diperbarui.");
+    }
+    function resetScores() {
+      if (!confirm("Yakin ingin mereset semua skor menjadi 0?")) return;
+      scores = {}; players.forEach(p => scores[p] = 0); persist(); renderPlayers(); notify("Semua skor direset.");
+    }
+    function resetGame() {
+      if (!confirm("Mulai ulang permainan? Kartu yang sudah muncul akan diacak kembali dan skor direset.")) return;
+      usedIds = []; currentCard = null; scores = {}; players.forEach(p => scores[p] = 0); playerIndex = 0;
+      renderCard(); $("completeBtn").disabled = true; persist(); renderPlayers(); notify("Permainan dimulai ulang.");
+    }
+
+    $("truthMode").addEventListener("click", () => setMode("Truth"));
+    $("dareMode").addEventListener("click", () => setMode("Dare"));
+    $("randomMode").addEventListener("click", () => setMode("Acak"));
+    $("drawBtn").addEventListener("click", drawCard);
+    $("skipBtn").addEventListener("click", drawCard);
+    $("completeBtn").addEventListener("click", completeTurn);
+    $("categoryFilter").addEventListener("change", () => { currentCard = null; renderCard(); $("completeBtn").disabled = true; });
+    $("prevPlayer").addEventListener("click", () => { playerIndex = (playerIndex - 1 + players.length) % players.length; renderPlayers(); if (currentCard) renderCard(); });
+    $("nextPlayer").addEventListener("click", () => { playerIndex = (playerIndex + 1) % players.length; renderPlayers(); if (currentCard) renderCard(); });
+    $("addPlayerBtn").addEventListener("click", addPlayer);
+    $("renamePlayerBtn").addEventListener("click", renamePlayer);
+    $("resetScoreBtn").addEventListener("click", resetScores);
+    $("resetGameBtn").addEventListener("click", resetGame);
+    $("teacherOpenTop").addEventListener("click", openTeacher);
+    $("closeTeacher").addEventListener("click", closeTeacher);
+    $("closeTeacherBottom").addEventListener("click", closeTeacher);
+    $("teacherModal").addEventListener("click", e => { if (e.target === $("teacherModal")) closeTeacher(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeTeacher(); });
+    $("saveCardBtn").addEventListener("click", saveCard);
+    $("exportBtn").addEventListener("click", exportCards);
+    $("importBtn").addEventListener("click", () => $("importFile").click());
+    $("importFile").addEventListener("change", e => importCards(e.target.files[0]));
+    $("downloadScoresBtn").addEventListener("click", downloadScores);
+    $("restoreCardsBtn").addEventListener("click", () => {
+      if (!confirm("Pulihkan semua kartu bawaan? Kartu buatan sendiri akan diganti.")) return;
+      cards = structuredClone(DEFAULT_CARDS); usedIds = []; currentCard = null; persist(); renderCard(); renderAll(); notify("Kartu bawaan dipulihkan.");
+    });
+    renderAll(); setMode("Truth"); renderCard(); $("completeBtn").disabled = true;
+  </script>
+</body>
+</html>
